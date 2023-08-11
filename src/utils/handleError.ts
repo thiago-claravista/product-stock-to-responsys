@@ -7,6 +7,9 @@ const handleError = (error: unknown) => {
     const { response, config } = error;
 
     switch (response?.status) {
+      case undefined:
+        console.log(`[${error.name}] ${error.message}`);
+        break;
       case 404:
         return null;
       case 429:
@@ -28,10 +31,9 @@ const handleError = (error: unknown) => {
     }
 
     return response?.status ?? null;
-  } else {
-    console.log(error.message);
   }
 
+  console.log(error.message);
   return null;
 };
 
