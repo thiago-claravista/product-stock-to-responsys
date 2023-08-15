@@ -11,7 +11,7 @@ interface ProductVariations {
 interface ProductBySku {
   sku: number;
   dimensions: {
-    Tamanho: string;
+    Tamanho?: string;
     CORES: string;
     COR: string;
   };

@@ -14,7 +14,7 @@ const schema = new mongoose.Schema<RequestLog>(
         productId: { type: Number, required: true },
         productName: { type: String, required: true },
         skuId: { type: Number, required: true },
-        tamanho: { type: String, required: true },
+        tamanho: { type: String },
         productPrice: { type: Number, required: true },
         categoryId: { type: Number, required: true },
         productImageUrl: { type: String, required: true },
