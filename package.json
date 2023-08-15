@@ -12,6 +12,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@types/mongoose": "^5.11.97",
     "@types/node": "^20.4.7",
     "@types/node-schedule": "^2.1.0",
     "nodemon": "^3.0.1",
