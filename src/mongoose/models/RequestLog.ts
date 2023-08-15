@@ -31,7 +31,7 @@ const schema = new mongoose.Schema<RequestLog>(
         mapTemplateName: { type: String },
         records: { type: [Object], required: true },
       },
-      updateOnMatch: { type: String, required: true },
+      updateOnMatch: { type: String },
     },
   },
   { timestamps: true }
