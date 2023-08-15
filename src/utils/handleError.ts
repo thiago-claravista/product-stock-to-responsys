@@ -33,7 +33,7 @@ const handleError = (error: unknown) => {
     return response?.status ?? null;
   }
 
-  console.log(error.message);
+  console.log(`[${error.name}] ${error.message}`);
   return null;
 };
 

@@ -1,4 +1,6 @@
 import { VtexProduct } from "./types/IVtexProduct";
+import connectToDatabase from "./mongoose/connectToDatabase";
+import createDatabaseLog from "./utils/createDatabaseLog";
 import sendVtexProductsToSupplementalTable from "./responsys/sendVtexProductsToSupplementalTable";
 import getProductBySku from "./vtex/getProductBySku";
 import getSkuList from "./vtex/getSkuList";
@@ -12,6 +14,9 @@ const init = async () => {
   let page = 1;
   let proceed = true;
 
+  await connectToDatabase();
+  console.log(`[${new Date().toLocaleString("pt-br")}] Migração iniciada...`);
+
   do {
     const skuList = await getSkuList(page++, LIMIT);
     const promiseList = await Promise.allSettled(skuList.map(getProductBySku));
@@ -20,23 +25,27 @@ const init = async () => {
     proceed = !!skuList.length;
 
     if (productList.length) {
-      console.log(`${productList.length} produtos encontrados!`);
+      // console.log(`${productList.length} produtos encontrados!`);
       productsToSend.push(...productList);
     }
 
     if (productsToSend.length >= LIMIT || (!proceed && productsToSend.length)) {
-      await sendVtexProductsToSupplementalTable(
-        productsToSend.splice(0, LIMIT)
-      );
+      const products = productsToSend.splice(0, LIMIT);
+      const response = await sendVtexProductsToSupplementalTable(products);
+
+      createDatabaseLog(products, response);
     }
 
     // productsNotFoundInPromises(promiseList);
   } while (proceed);
+
+  console.log(`[${new Date().toLocaleString("pt-br")}] Migração finalizada!`);
 };
 
 const rule = new schedule.RecurrenceRule();
-rule.hour = 0;
+rule.hour = [0, 12, 18];
 rule.minute = 0;
 rule.tz = "America/Sao_Paulo";
 
 schedule.scheduleJob(rule, init);
+console.log("'product-stock-to-responsys' iniciado...");

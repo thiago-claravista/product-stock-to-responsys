@@ -6,7 +6,7 @@ const getSkuList = async (page: number, size: number) => {
   const requestConfig = LIST_ALL_SKU_GET(page, size);
 
   try {
-    console.log(`Obtendo a página ${page} da lista de SKUs...`);
+    // console.log(`Obtendo a página ${page} da lista de SKUs...`);
     const axios = getAxios();
     const response = await axios<number[]>(requestConfig);
 
