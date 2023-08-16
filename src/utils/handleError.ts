@@ -11,7 +11,7 @@ const handleError = (error: unknown) => {
         console.log(`[${error.name}] ${error.message}`);
         break;
       case 404:
-        return null;
+        break;
       default:
         console.log(
           `[${response?.status}] ${JSON.stringify(response?.data)} -> ${
