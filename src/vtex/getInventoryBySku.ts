@@ -1,6 +1,7 @@
 import { INVENTORY_BY_SKU_GET } from "../api";
 import handleError from "../utils/handleError";
 import getAxios from "../utils/getAxios";
+import createProductError from "../utils/createProductError";
 
 interface Inventory {
   skuId: string;
@@ -23,7 +24,8 @@ const getInventoryBySku = async (sku: number) => {
     const response = await axios<Inventory>(requestConfig);
     return response.data;
   } catch (error) {
-    handleError(error);
+    const status = handleError(error);
+    createProductError(sku, status);
     return null;
   }
 };

@@ -8,9 +8,14 @@ const getProductBySku = async (sku: number) => {
   const context = await getProductContextBySku(sku);
 
   if (context) {
-    const variationList = await getVariationListByProductId(context.ProductId);
+    const variationList = await getVariationListByProductId(
+      context.ProductId,
+      sku
+    );
     const variation = variationList?.find((variation) => variation.sku === sku);
     const [category] = Object.keys(context.ProductCategories);
+    const [tamanho] = context.NameComplete.match(/(?<=-\s).+$/) ??
+      context.SkuName.match(/(?<=-\s).+$/) ?? [""];
 
     if (variation) {
       const inventory = await getInventoryBySku(sku);
@@ -29,14 +34,14 @@ const getProductBySku = async (sku: number) => {
       );
 
       if (!variation.dimensions.Tamanho) {
-        console.log("Produto sem tamanho:", sku);
+        // console.log("Produto sem tamanho:", sku);
       }
 
       const product: VtexProduct = {
         productId: context.ProductId,
         productName: context.ProductName,
         skuId: sku,
-        tamanho: variation.dimensions.Tamanho ?? "",
+        tamanho: variation.dimensions.Tamanho ?? tamanho,
         productPrice: convertVtexCurrencyToNumber(price),
         categoryId: Number(category),
         productImageUrl: variation.image ?? context.ImageUrl,

@@ -1,6 +1,7 @@
 import { VARIATION_LIST_BY_PRODUCT_ID_GET } from "../api";
 import handleError from "../utils/handleError";
 import getAxios from "../utils/getAxios";
+import createProductError from "../utils/createProductError";
 
 interface ProductVariations {
   productId: number;
@@ -25,7 +26,7 @@ interface ProductBySku {
   image: string;
 }
 
-const getVariationListByProductId = async (productId: number) => {
+const getVariationListByProductId = async (productId: number, sku: number) => {
   const requestConfig = VARIATION_LIST_BY_PRODUCT_ID_GET(productId);
 
   try {
@@ -33,7 +34,8 @@ const getVariationListByProductId = async (productId: number) => {
     const response = await axios<ProductVariations>(requestConfig);
     return response.data.skus;
   } catch (error) {
-    handleError(error);
+    const status = handleError(error);
+    createProductError(sku, status);
     return null;
   }
 };

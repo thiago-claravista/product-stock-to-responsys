@@ -12,15 +12,6 @@ const handleError = (error: unknown) => {
         break;
       case 404:
         return null;
-      case 429:
-        console.log(
-          `[${response?.status}] Limite de requisições excedido -> ${config?.url}`
-        );
-        console.log(response.headers);
-        break;
-      case 500:
-      // logica para tentar envio novamente
-      // break;
       default:
         console.log(
           `[${response?.status}] ${JSON.stringify(response?.data)} -> ${
