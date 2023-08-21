@@ -33,18 +33,14 @@ const getProductBySku = async (sku: number) => {
         variation.spotPrice
       );
 
-      if (!variation.dimensions.Tamanho) {
-        // console.log("Produto sem tamanho:", sku);
-      }
-
       const product: VtexProduct = {
         productId: context.ProductId,
         productName: context.ProductName,
         skuId: sku,
-        tamanho: variation.dimensions.Tamanho ?? tamanho,
+        tamanho: variation.dimensions.Tamanho || tamanho,
         productPrice: convertVtexCurrencyToNumber(price),
         categoryId: Number(category),
-        productImageUrl: variation.image ?? context.ImageUrl,
+        productImageUrl: variation.image || context.ImageUrl,
         productUrl: context.DetailUrl,
         productAvailability: Boolean(balance.totalQuantity),
         productInventory: balance.totalQuantity,

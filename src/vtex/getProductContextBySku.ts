@@ -1,7 +1,7 @@
 import { CONTEXT_BY_SKU_GET } from "../api";
 import handleError from "../utils/handleError";
 import getAxios from "../utils/getAxios";
-import createProductError from "../utils/createProductError";
+import createProductErrorLog from "../utils/createProductErrorLog";
 
 interface ProductContext {
   Id: number;
@@ -23,7 +23,7 @@ const getProductContextBySku = async (sku: number) => {
     return response.data;
   } catch (error) {
     const status = handleError(error);
-    createProductError(sku, status);
+    createProductErrorLog(sku, status);
     return null;
   }
 };

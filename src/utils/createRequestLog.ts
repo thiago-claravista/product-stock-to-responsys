@@ -3,7 +3,7 @@ import { VtexProduct } from "../types/IVtexProduct";
 import model from "../mongoose/models/RequestLog";
 import handleError from "./handleError";
 
-const createDatabaseLog = async (
+const createRequestLog = async (
   products: VtexProduct[],
   response: SupplementalTableRecordsBody<any> | null
 ) => {
@@ -15,4 +15,4 @@ const createDatabaseLog = async (
   }
 };
 
-export default createDatabaseLog;
+export default createRequestLog;

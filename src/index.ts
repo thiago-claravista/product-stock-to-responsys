@@ -1,12 +1,12 @@
 import { VtexProduct } from "./types/IVtexProduct";
 import connectToDatabase from "./mongoose/connectToDatabase";
-import createDatabaseLog from "./utils/createDatabaseLog";
+import createRequestLog from "./utils/createRequestLog";
 import sendVtexProductsToSupplementalTable from "./responsys/sendVtexProductsToSupplementalTable";
 import getProductBySku from "./vtex/getProductBySku";
 import getSkuList from "./vtex/getSkuList";
 import productsFoundInPromises from "./utils/productsFoundInPromises";
-import productsNotFoundInPromises from "./utils/productsNotFoundInPromises";
 import schedule from "node-schedule";
+import resendProductsWithError from "./utils/resendProductsWithError";
 
 const init = async () => {
   const LIMIT = 200;
@@ -33,12 +33,11 @@ const init = async () => {
       const products = productsToSend.splice(0, LIMIT);
       const response = await sendVtexProductsToSupplementalTable(products);
 
-      createDatabaseLog(products, response);
+      createRequestLog(products, response);
     }
-
-    // productsNotFoundInPromises(promiseList);
   } while (proceed);
 
+  await resendProductsWithError();
   console.log(`[${new Date().toLocaleString("pt-br")}] Migração finalizada!`);
 };
 
@@ -49,4 +48,3 @@ rule.tz = "America/Sao_Paulo";
 
 schedule.scheduleJob(rule, init);
 console.log("'product-stock-to-responsys' iniciado...");
-init();
