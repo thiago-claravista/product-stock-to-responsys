@@ -48,3 +48,4 @@ rule.tz = "America/Sao_Paulo";
 
 schedule.scheduleJob(rule, init);
 console.log("'product-stock-to-responsys' iniciado...");
+init();
