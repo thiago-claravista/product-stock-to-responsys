@@ -14,7 +14,7 @@ const createProductErrorLog = async (sku: number, status: number | null) => {
       handleError(error);
     }
   } else {
-    ProductNotFound.findOneAndUpdate({ sku }, { sku }, { upsert: true });
+    ProductNotFound.findOneAndUpdate({ sku }, { sku }, { upsert: true }).exec();
   }
 };
 
