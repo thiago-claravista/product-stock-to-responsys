@@ -6,6 +6,7 @@ import productsFoundInPromises from "./productsFoundInPromises";
 import productsNotFoundInPromises from "./productsNotFoundInPromises";
 
 const resendProductsWithError = async () => {
+  const LIMIT = 200;
   const products = await model.find().exec();
 
   if (products.length) {
@@ -19,25 +20,26 @@ const resendProductsWithError = async () => {
       (reason) => reason.sku
     );
 
-    if (productList.length) {
-      const response = await sendVtexProductsToSupplementalTable(productList);
+    do {
+      const productsToSend = productList.splice(0, LIMIT);
+      const response = await sendVtexProductsToSupplementalTable(
+        productsToSend
+      );
 
       // cria o log e deleta da collection os produtos encontrados
       await Promise.allSettled(
         [
-          createRequestLog(productList, response),
-          productList.map(({ skuId }) =>
+          createRequestLog(productsToSend, response),
+          productsToSend.map(({ skuId }) =>
             model.findOneAndDelete({ sku: skuId }).exec()
           ),
         ].flat()
       );
 
-      console.log(
-        `${productList.length}/${products.length} produtos enviados!`
-      );
-    } else {
-      console.log("hasRequestLimitLog:", hasRequestLimitLog);
-    }
+      console.log(`${productsToSend.length} produtos enviados!`);
+    } while (!!productList.length);
+
+    console.log("hasRequestLimitLog:", hasRequestLimitLog);
 
     // deleta da collection os produtos não encontrados
     if (!hasRequestLimitLog) {
