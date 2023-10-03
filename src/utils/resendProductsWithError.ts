@@ -21,7 +21,7 @@ const resendProductsWithError = async () => {
       (reason) => reason.sku
     );
 
-    do {
+    while (!!productList.length) {
       const productsToSend = productList.splice(0, LIMIT);
       const response = await sendVtexProductsToSupplementalTable(
         productsToSend
@@ -38,7 +38,7 @@ const resendProductsWithError = async () => {
       );
 
       console.log(`${productsToSend.length} produtos enviados!`);
-    } while (!!productList.length);
+    }
 
     // deleta da collection os produtos não encontrados
     console.log(`${notFoundProductSkuList.length} produtos não encontrados!`);

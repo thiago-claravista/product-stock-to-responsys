@@ -26,6 +26,10 @@ const sendVtexProductsToSupplementalTable = async (products: VtexProduct[]) => {
     throw "Token de autenticação não informado!";
   }
 
+  if (!products.length) {
+    return null;
+  }
+
   const records = products.map(
     convertVtexProductToProductTableSupplementalRecord
   );
