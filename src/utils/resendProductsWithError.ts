@@ -10,9 +10,10 @@ const resendProductsWithError = async () => {
   const products = await model.find().exec();
 
   if (products.length) {
-    console.log(`Reenviando produtos com erro de requisição...`);
+    console.log(
+      `Reenviando produtos com erro de requisição (${products.length} produtos)...`
+    );
 
-    const hasRequestLimitLog = products.some((p) => p.status === 429);
     const skuList = products.map((p) => p.sku);
     const promiseList = await Promise.allSettled(skuList.map(getProductBySku));
     const productList = productsFoundInPromises(promiseList);
@@ -39,18 +40,14 @@ const resendProductsWithError = async () => {
       console.log(`${productsToSend.length} produtos enviados!`);
     } while (!!productList.length);
 
-    console.log("hasRequestLimitLog:", hasRequestLimitLog);
-
     // deleta da collection os produtos não encontrados
-    if (!hasRequestLimitLog) {
-      console.log(`${notFoundProductSkuList.length} produtos não encontrados!`);
+    console.log(`${notFoundProductSkuList.length} produtos não encontrados!`);
 
-      await Promise.allSettled(
-        notFoundProductSkuList.map((sku) =>
-          model.findOneAndDelete({ sku }).exec()
-        )
-      );
-    }
+    await Promise.allSettled(
+      notFoundProductSkuList.map((sku) =>
+        model.findOneAndDelete({ sku }).exec()
+      )
+    );
   }
 };
 
